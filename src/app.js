@@ -16,8 +16,8 @@ import './database';
 class App {
   constructor() {
     this.server = express();
-    this.io = socketIO(http.Server(this.server));
-    this.io.origins(['*']);
+    this.app = http.Server(this.server);
+    this.io = socketIO(this.app);
 
     Sentry.init(sentryConfig);
 
@@ -28,7 +28,9 @@ class App {
   }
 
   middlewares() {
-    // this.server.use(Sentry.Handlers.requestHandler());
+    if (process.env.NODE_ENV === 'production') {
+      this.server.use(Sentry.Handlers.requestHandler());
+    }
 
     this.server.use(cors());
     this.server.use(express.json());
@@ -38,14 +40,16 @@ class App {
     );
 
     this.io.on('connection', socket => {
-      console.log(socket);
+      console.log(socket.id);
     });
   }
 
   routes() {
     this.server.use(routes);
 
-    // this.server.use(Sentry.Handlers.errorHandler());
+    if (process.env.NODE_ENV === 'production') {
+      this.server.use(Sentry.Handlers.errorHandler());
+    }
   }
 
   encapsulateSocket() {
@@ -68,4 +72,4 @@ class App {
   }
 }
 
-export default new App().server;
+export default new App().app;
