@@ -17,6 +17,7 @@ class App {
   constructor() {
     this.server = express();
     this.io = socketIO(http.Server(this.server));
+    this.io.origins(['*']);
 
     Sentry.init(sentryConfig);
 

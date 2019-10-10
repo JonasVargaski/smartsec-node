@@ -16,7 +16,7 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.get('/', (req, res) => {
+routes.get('/', async (req, res) => {
   return res.json({ message: 'ok' });
 });
 
