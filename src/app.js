@@ -1,6 +1,8 @@
 import 'dotenv/config';
 
 import express from 'express';
+import http from 'http';
+import socketIO from 'socket.io';
 import path from 'path';
 import cors from 'cors';
 import Youch from 'youch';
@@ -14,12 +16,14 @@ import './database';
 class App {
   constructor() {
     this.server = express();
+    this.io = socketIO(http.Server(this.server));
 
     Sentry.init(sentryConfig);
 
     this.middlewares();
     this.routes();
     this.exceptionHandler();
+    this.encapsulateSocket();
   }
 
   middlewares() {
@@ -31,12 +35,23 @@ class App {
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
     );
+
+    this.io.on('connection', socket => {
+      console.log(socket);
+    });
   }
 
   routes() {
     this.server.use(routes);
 
     // this.server.use(Sentry.Handlers.errorHandler());
+  }
+
+  encapsulateSocket() {
+    this.server.use((req, res, next) => {
+      req.io = this.io;
+      return next();
+    });
   }
 
   exceptionHandler() {
