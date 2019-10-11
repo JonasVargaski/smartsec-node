@@ -11,7 +11,7 @@ import 'express-async-errors';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
-// import Socket from './socket';
+import Socket from './socket';
 
 import './database';
 
@@ -47,6 +47,8 @@ class App {
   }
 
   encapsulateSocket() {
+    Socket.init(this.io);
+
     this.server.use((req, res, next) => {
       req.io = this.io;
       return next();
