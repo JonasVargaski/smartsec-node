@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
 
+import DeviceController from './app/controllers/DeviceController';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
@@ -16,6 +17,11 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 const upload = multer(multerConfig);
 
+routes.get('/', async (req, res) => {
+  return res.json({ message: 'ok' });
+});
+
+routes.get('/device/save', DeviceController.store);
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
