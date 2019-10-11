@@ -4,10 +4,9 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "start": "sucrase-node src/server.js",
+    "start": "sucrase-node ./src/server.js",
     "dev": "nodemon src/server.js",
-    "queue": "nodemon src/queue.js",
-    "migrations": "sequelize db:migrate"
+    "queue": "nodemon src/queue.js"
   },
   "dependencies": {
     "@sentry/node": "5.4.3",
