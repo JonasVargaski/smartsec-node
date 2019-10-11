@@ -1,10 +1,7 @@
 class Socket {
-  constructor(io) {
+  init(io) {
     this.io = io;
-    this.init();
-  }
 
-  init() {
     this.io.on('connection', socket => {
       console.log(socket.id);
     });
