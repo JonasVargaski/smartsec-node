@@ -11,6 +11,8 @@ import 'express-async-errors';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
+// import Socket from './socket';
+
 import './database';
 
 class App {
@@ -19,7 +21,9 @@ class App {
     this.app = http.Server(this.server);
     this.io = socketIO(this.app);
 
-    Sentry.init(sentryConfig);
+    if (process.env.NODE_ENV === 'production') {
+      Sentry.init(sentryConfig);
+    }
 
     this.middlewares();
     this.routes();
@@ -28,28 +32,18 @@ class App {
   }
 
   middlewares() {
-    if (process.env.NODE_ENV === 'production') {
-      this.server.use(Sentry.Handlers.requestHandler());
-    }
-
+    this.server.use(Sentry.Handlers.requestHandler());
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
     );
-
-    this.io.on('connection', socket => {
-      console.log(socket.id);
-    });
   }
 
   routes() {
     this.server.use(routes);
-
-    if (process.env.NODE_ENV === 'production') {
-      this.server.use(Sentry.Handlers.errorHandler());
-    }
+    this.server.use(Sentry.Handlers.errorHandler());
   }
 
   encapsulateSocket() {
