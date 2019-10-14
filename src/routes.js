@@ -8,8 +8,8 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
 
+import validateDeviceStore from './app/validators/DeviceStore';
 import validateSessionStore from './app/validators/SessionStore';
-
 import validateUserStore from './app/validators/UserStore';
 import validateUserUpdate from './app/validators/UserUpdate';
 
@@ -20,7 +20,8 @@ import File from './app/models/File';
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.get('/device/save', DeviceController.store);
+routes.get('/device/save', validateDeviceStore, DeviceController.store);
+
 routes.get('/', async (req, res) => {
   const files = await File.findAll();
 
