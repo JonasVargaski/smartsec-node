@@ -14,19 +14,17 @@ import validateUserStore from './app/validators/UserStore';
 import validateUserUpdate from './app/validators/UserUpdate';
 
 import authMiddleware from './app/middlewares/auth';
-
-import File from './app/models/File';
+import authDevice from './app/middlewares/authDevice';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.get('/device/integration', validateDeviceStore, DeviceController.store);
-
-routes.get('/', async (req, res) => {
-  const files = await File.findAll();
-
-  return res.json(files);
-});
+routes.get(
+  '/device/integration',
+  authDevice,
+  validateDeviceStore,
+  DeviceController.store
+);
 
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);

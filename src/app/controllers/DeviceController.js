@@ -1,9 +1,9 @@
 import Device from '../schemas/Device';
-import Socket from '../../socket';
+import io from '../../lib/Socket';
 
 class DeviceController {
   async store(req, res) {
-    Socket.io.emit('device:real-time', req.body);
+    console.log(io);
 
     await Device.create(req.body);
 

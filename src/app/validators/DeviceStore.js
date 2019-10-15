@@ -39,11 +39,6 @@ export default async (req, res, next) => {
 
     const i = req.query.i.split('|');
     const p = req.query.p.split('|');
-    const key = req.query.k;
-
-    if (!key || key !== process.env.DEVICE_KEY) {
-      return res.json({ save: 'Acess Deined' });
-    }
 
     const info = {
       temp: parseFloat(i[0]),
