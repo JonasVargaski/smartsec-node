@@ -3,7 +3,9 @@ import io from '../../lib/Socket';
 
 class DeviceController {
   async store(req, res) {
-    console.log(io);
+    io()
+      .to('dsd')
+      .emit('msdk', 'snsi');
 
     await Device.create(req.body);
 
