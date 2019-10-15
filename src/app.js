@@ -18,7 +18,7 @@ class App {
   constructor() {
     this.server = express();
     this.app = http.Server(this.server);
-    socket(this.app);
+    socket.init(this.app);
 
     if (process.env.NODE_ENV === 'production') {
       Sentry.init(sentryConfig);
