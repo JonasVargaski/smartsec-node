@@ -20,7 +20,7 @@ import File from './app/models/File';
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.get('/device/save', validateDeviceStore, DeviceController.store);
+routes.get('/device/integration', validateDeviceStore, DeviceController.store);
 
 routes.get('/', async (req, res) => {
   const files = await File.findAll();

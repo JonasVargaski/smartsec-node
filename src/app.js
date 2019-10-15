@@ -35,6 +35,7 @@ class App {
     this.server.use(Sentry.Handlers.requestHandler());
     this.server.use(cors());
     this.server.use(express.json());
+    this.server.disable('x-powered-by');
 
     this.server.use(
       '/files',
