@@ -35,6 +35,11 @@ class App {
     this.server.use(express.json());
     this.server.disable('x-powered-by');
 
+    this.server.use((req, res, next) => {
+      req.io = socket.get();
+      return next();
+    });
+
     this.server.use(
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
