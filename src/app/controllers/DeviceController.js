@@ -16,5 +16,23 @@ class DeviceController {
 
     return res.json(device);
   }
+
+  async update(req, res) {
+    const device = await Device.findByPk(req.params.id);
+
+    if (!device) {
+      return res.json({ error: 'Device does not exists.' });
+    }
+
+    const {
+      id,
+      description,
+      serial,
+      situation,
+      password,
+    } = await device.update(req.body);
+
+    return res.json({ id, description, serial, situation, password });
+  }
 }
 export default new DeviceController();

@@ -9,6 +9,7 @@ import DeviceController from './app/controllers/DeviceController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
 
+import validateDeviceIntegrationStore from './app/validators/DeviceIntegrationStore';
 import validateDeviceStore from './app/validators/DeviceStore';
 import validateSessionStore from './app/validators/SessionStore';
 import validateUserStore from './app/validators/UserStore';
@@ -23,7 +24,7 @@ const upload = multer(multerConfig);
 routes.get(
   '/device/integration',
   authDevice,
-  validateDeviceStore,
+  validateDeviceIntegrationStore,
   DeviceIntegrationController.store
 );
 
@@ -34,7 +35,8 @@ routes.use(authMiddleware);
 
 routes.put('/users', validateUserUpdate, UserController.update);
 
-routes.post('/device', DeviceController.store);
+routes.post('/device', validateDeviceStore, DeviceController.store);
+routes.put('/device/:id', DeviceController.update);
 
 routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
