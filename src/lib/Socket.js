@@ -25,10 +25,6 @@ class Socket {
       }
       return next();
     });
-
-    setInterval(async () => {
-      console.log((await Session.getAll('')).length);
-    }, 1000);
   }
 
   async connections() {
