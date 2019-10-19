@@ -17,6 +17,14 @@ class DeviceController {
     return res.json(device);
   }
 
+  async index(req, res) {
+    const devices = await Device.findAll({
+      order: [['updatedAt', 'DESC']],
+    });
+
+    return res.json(devices);
+  }
+
   async update(req, res) {
     const device = await Device.findByPk(req.params.id);
 
@@ -24,15 +32,9 @@ class DeviceController {
       return res.json({ error: 'Device does not exists.' });
     }
 
-    const {
-      id,
-      description,
-      serial,
-      situation,
-      password,
-    } = await device.update(req.body);
+    await device.update(req.body);
 
-    return res.json({ id, description, serial, situation, password });
+    return res.json(device);
   }
 }
 export default new DeviceController();

@@ -6,11 +6,14 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import DeviceIntegrationController from './app/controllers/DeviceIntegrationController';
 import DeviceController from './app/controllers/DeviceController';
+import UserDeviceController from './app/controllers/UserDeviceController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
 
 import validateDeviceIntegrationStore from './app/validators/DeviceIntegrationStore';
 import validateDeviceStore from './app/validators/DeviceStore';
+import validateUserDeviceStore from './app/validators/UserDeviceStore';
+import validateUserDeviceUpdate from './app/validators/UserDeviceUpdate';
 import validateSessionStore from './app/validators/SessionStore';
 import validateUserStore from './app/validators/UserStore';
 import validateUserUpdate from './app/validators/UserUpdate';
@@ -35,12 +38,29 @@ routes.use(authMiddleware);
 
 routes.put('/users', validateUserUpdate, UserController.update);
 
-routes.post('/device', validateDeviceStore, DeviceController.store);
-routes.put('/device/:id', DeviceController.update);
+routes.post('/devices', validateDeviceStore, DeviceController.store);
+routes.get('/devices', DeviceController.index);
+routes.put('/devices/:id', DeviceController.update);
+
+routes.get('/devices/associate', UserDeviceController.index);
+routes.put(
+  '/devices/associate/:id',
+  validateUserDeviceUpdate,
+  UserDeviceController.update
+);
+routes.post(
+  '/devices/associate',
+  validateUserDeviceStore,
+  UserDeviceController.store
+);
 
 routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/files', upload.single('file'), FileController.store);
+
+routes.all('/*', (req, res) => {
+  res.status(400).json({ error: 'This resource cannot be found' });
+});
 
 export default routes;

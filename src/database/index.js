@@ -4,10 +4,11 @@ import mongoose from 'mongoose';
 import User from '../app/models/User';
 import File from '../app/models/File';
 import Device from '../app/models/Device';
+import UserDevice from '../app/models/UserDevice';
 
 import databaseConfig from '../config/database';
 
-const models = [User, File, Device];
+const models = [User, File, Device, UserDevice];
 class Database {
   constructor() {
     this.init();
