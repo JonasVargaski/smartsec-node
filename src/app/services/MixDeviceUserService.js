@@ -35,8 +35,11 @@ class MixDeviceUserService {
     return {
       id: associate.id,
       description,
-      serial,
-      createdAt: associate.createdAt,
+      updatedAt: associate.updatedAt,
+      device: {
+        id: device.id,
+        serial,
+      },
     };
   }
 }

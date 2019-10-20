@@ -30,6 +30,7 @@ class Socket {
   async connections() {
     this.io.on('connection', async socket => {
       await Session.set(449, { session: socket.id, nome: 'Jonas' });
+      console.log(socket.id);
 
       socket.on('disconnect', async () => {
         await Session.invalidate(449);

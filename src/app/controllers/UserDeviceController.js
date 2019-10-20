@@ -1,11 +1,20 @@
 import MixDeviceUserService from '../services/MixDeviceUserService';
 import UserDevice from '../models/UserDevice';
+import Device from '../models/Device';
 
 class UserDeviceController {
   async index(req, res) {
     const devices = await UserDevice.findAll({
       where: { user_id: req.userId, situation: 'active' },
+      attributes: ['id', 'description', 'updatedAt'],
       order: [['updatedAt', 'DESC']],
+      include: [
+        {
+          model: Device,
+          as: 'device',
+          attributes: ['id', 'serial'],
+        },
+      ],
     });
 
     return res.json(devices);
