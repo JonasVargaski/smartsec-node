@@ -1,6 +1,8 @@
 import socketIo from 'socket.io';
 import Session from './Session';
 
+import Device from '../app/schemas/Device';
+
 class Socket {
   constructor() {
     this.io = null;
@@ -18,19 +20,24 @@ class Socket {
   middlewares() {
     this.io.set('origins', '*:*');
 
-    this.io.use((socket, next) => {
-      const { token } = socket.handshake.query;
-      if (!token) {
-        return next(new Error('Acess Deined'));
-      }
-      return next();
-    });
+    // this.io.use((socket, next) => {
+    //   const { token } = socket.handshake.query;
+    //   if (!token) {
+    //     return next(new Error('Acess Deined'));
+    //   }
+    //   return next();
+    // });
   }
 
   async connections() {
     this.io.on('connection', async socket => {
       await Session.set(449, { session: socket.id, nome: 'Jonas' });
-      console.log(socket.id);
+
+      socket.on('get:device', async ({ device }) => {
+        const data = await Device.findOne({}).sort({ _id: -1 });
+
+        socket.emit('device:real-time', data || {});
+      });
 
       socket.on('disconnect', async () => {
         await Session.invalidate(449);
