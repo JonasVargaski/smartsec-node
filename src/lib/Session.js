@@ -3,9 +3,10 @@ import Redis from 'ioredis';
 class SocketSession {
   constructor() {
     this.redis = new Redis({
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      keyPrefix: 'socketSession',
+      // host: process.env.REDIS_HOST,
+      // port: process.env.REDIS_PORT,
+      uri: process.env.REDIS_URL,
+      keyPrefix: 'session:',
     });
   }
 
@@ -18,16 +19,18 @@ class SocketSession {
     return cached ? JSON.parse(cached) : null;
   }
 
+  getAll() {
+    return this.redis.keys('session:*');
+  }
+
   invalidate(key) {
     return this.redis.del(key);
   }
 
   async invalidatePrefix(prefix) {
-    const keys = await this.redis.keys(`cache:${prefix}:*`);
+    const keys = await this.redis.keys(`session:${prefix}:*`);
 
-    const keysWithoutPrefix = keys.map(key =>
-      key.replace('socketSession:', '')
-    );
+    const keysWithoutPrefix = keys.map(key => key.replace('session:', ''));
 
     return this.redis.del(keysWithoutPrefix);
   }

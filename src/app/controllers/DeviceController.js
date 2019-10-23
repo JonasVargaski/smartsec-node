@@ -1,28 +1,40 @@
-import Device from '../schemas/Device';
+import Device from '../models/Device';
 
 class DeviceController {
   async store(req, res) {
-    const info = req.query.i.split('/');
+    const { serial } = req.body;
 
-    await Device.create({
-      temp: info[0],
-      tempAdj: info[1],
-      umid: info[2],
-      umidAdj: info[3],
-      fan: info[4],
-      alarm: info[5],
-      workMode: info[6],
-      lock: info[7],
-      phase: info[8],
-      climate: info[9],
-      sensorType: info[10],
-      wifiMac: info[11],
-      wifiPassword: info[12],
-      firmwareVersion: info[13],
-      energy: info[14],
+    const deviceExists = await Device.findOne({
+      where: { serial },
     });
 
-    return res.json({ save: 'SUCESS' });
+    if (deviceExists) {
+      return res.json({ error: 'Device already exists.' });
+    }
+
+    const device = await Device.create(req.body);
+
+    return res.json(device);
+  }
+
+  async index(req, res) {
+    const devices = await Device.findAll({
+      order: [['updatedAt', 'DESC']],
+    });
+
+    return res.json(devices);
+  }
+
+  async update(req, res) {
+    const device = await Device.findByPk(req.params.id);
+
+    if (!device) {
+      return res.json({ error: 'Device does not exists.' });
+    }
+
+    await device.update(req.body);
+
+    return res.json(device);
   }
 }
 export default new DeviceController();

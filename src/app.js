@@ -2,7 +2,6 @@ import 'dotenv/config';
 
 import express from 'express';
 import http from 'http';
-import socketIO from 'socket.io';
 import path from 'path';
 import cors from 'cors';
 import Youch from 'youch';
@@ -11,7 +10,7 @@ import 'express-async-errors';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
-import Socket from './socket';
+import socket from './lib/Socket';
 
 import './database';
 
@@ -19,7 +18,7 @@ class App {
   constructor() {
     this.server = express();
     this.app = http.Server(this.server);
-    this.io = socketIO(this.app);
+    socket.init(this.app);
 
     if (process.env.NODE_ENV === 'production') {
       Sentry.init(sentryConfig);
@@ -28,13 +27,18 @@ class App {
     this.middlewares();
     this.routes();
     this.exceptionHandler();
-    this.encapsulateSocket();
   }
 
   middlewares() {
     this.server.use(Sentry.Handlers.requestHandler());
     this.server.use(cors());
     this.server.use(express.json());
+    this.server.disable('x-powered-by');
+
+    this.server.use((req, res, next) => {
+      req.io = socket.get();
+      return next();
+    });
 
     this.server.use(
       '/files',
@@ -45,15 +49,6 @@ class App {
   routes() {
     this.server.use(routes);
     this.server.use(Sentry.Handlers.errorHandler());
-  }
-
-  encapsulateSocket() {
-    Socket.init(this.io);
-
-    this.server.use((req, res, next) => {
-      req.io = this.io;
-      return next();
-    });
   }
 
   exceptionHandler() {
