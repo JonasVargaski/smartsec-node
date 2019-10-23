@@ -4,9 +4,7 @@ class DeviceIntegrationController {
   async store(req, res) {
     req.io.emit('device:real-time', { temp: 'sd' });
 
-    console.log('mksdksdmk');
-
-    await Device.create(req.body);
+    // await Device.create(req.body);
 
     return res.json({ save: 'SUCESS' });
   }
