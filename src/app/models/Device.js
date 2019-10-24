@@ -18,6 +18,15 @@ class Device extends Model {
     );
     return this;
   }
+
+  static associate(models) {
+    // this.belongsToMany(models.UserDevice, {
+    //   foreignKey: 'user_id',
+    //   through: 'user_device',
+    //   as: 'users',
+    // });
+    this.hasMany(models.UserDevice, { foreignKey: 'device_id', as: 'users' });
+  }
 }
 
 export default Device;

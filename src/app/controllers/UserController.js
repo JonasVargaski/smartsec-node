@@ -1,5 +1,6 @@
 import User from '../models/User';
 import File from '../models/File';
+import Device from '../models/Device';
 
 class UserController {
   async store(req, res) {
@@ -16,6 +17,26 @@ class UserController {
       name,
       email,
     });
+  }
+
+  async index(req, res) {
+    const user = await Device.findAll({
+      include: [
+        {
+          association: 'users',
+          include: [
+            {
+              association: 'device',
+            },
+            {
+              association: 'user',
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.json(user);
   }
 
   async update(req, res) {
