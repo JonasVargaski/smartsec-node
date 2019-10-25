@@ -31,6 +31,9 @@ routes.get(
   DeviceIntegrationController.store
 );
 
+routes.get('/', (req, res) => {
+  res.send('deploy ok');
+});
 routes.get('/users', UserController.index);
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
