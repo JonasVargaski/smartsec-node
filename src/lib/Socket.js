@@ -1,5 +1,5 @@
 import socketIo from 'socket.io';
-import Session from './Session';
+// import Session from './Session';
 
 import Device from '../app/schemas/Device';
 
@@ -31,7 +31,7 @@ class Socket {
 
   async connections() {
     this.io.on('connection', async socket => {
-      await Session.set(449, { session: socket.id, nome: 'Jonas' });
+      // await Session.set(449, { session: socket.id, nome: 'Jonas' });
 
       socket.on('get:device', async ({ device }) => {
         const data = await Device.findOne({}).sort({ _id: -1 });
@@ -40,7 +40,7 @@ class Socket {
       });
 
       socket.on('disconnect', async () => {
-        await Session.invalidate(449);
+        // await Session.invalidate(449);
       });
     });
   }
