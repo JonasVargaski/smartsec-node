@@ -19,26 +19,6 @@ class UserController {
     });
   }
 
-  async index(req, res) {
-    const user = await Device.findAll({
-      include: [
-        {
-          association: 'users',
-          include: [
-            {
-              association: 'device',
-            },
-            {
-              association: 'user',
-            },
-          ],
-        },
-      ],
-    });
-
-    return res.json(user);
-  }
-
   async update(req, res) {
     const { email, oldPassword } = req.body;
 

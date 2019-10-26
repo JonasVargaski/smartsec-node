@@ -9,6 +9,7 @@ import DeviceController from './app/controllers/DeviceController';
 import UserDeviceController from './app/controllers/UserDeviceController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
+import TestController from './app/controllers/TestController';
 
 import validateDeviceIntegrationStore from './app/validators/DeviceIntegrationStore';
 import validateDeviceStore from './app/validators/DeviceStore';
@@ -31,10 +32,7 @@ routes.get(
   DeviceIntegrationController.store
 );
 
-routes.get('/', (req, res) => {
-  res.send('deploy ok');
-});
-routes.get('/users', UserController.index);
+routes.get('/test', TestController.index);
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
 
