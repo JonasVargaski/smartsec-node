@@ -1,7 +1,7 @@
 import socketIo from 'socket.io';
 // import Session from './Session';
 
-import Device from '../app/schemas/Device';
+import Cache from './Cache';
 
 class Socket {
   constructor() {
@@ -34,8 +34,10 @@ class Socket {
       // await Session.set(449, { session: socket.id, nome: 'Jonas' });
 
       socket.on('get:device', async ({ device }) => {
-        // const data = await Device.findOne({}).sort({ _id: -1 });
-        // socket.emit('device:real-time', data || {});
+        const data = await Cache.get('teste:device');
+        if (data) {
+          socket.emit('device:real-time', data || {});
+        }
       });
 
       socket.on('disconnect', async () => {
