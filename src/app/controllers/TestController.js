@@ -1,14 +1,10 @@
-import Notification from '../schemas/Notification';
+import Device from '../schemas/Device';
 
 class TestController {
   async index(req, res) {
-    const notifications = await Notification.find({
-      user: req.userId,
-    })
-      .sort({ createdAt: 'desc' })
-      .limit(20);
+    const data = await Device.find();
 
-    return res.json(notifications);
+    return res.json(data);
   }
 }
 
