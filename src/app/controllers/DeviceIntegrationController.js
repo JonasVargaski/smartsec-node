@@ -1,4 +1,4 @@
-import Cache from './Cache';
+import Cache from '../../lib/Cache';
 // import Device from '../schemas/Device';
 
 class DeviceIntegrationController {
