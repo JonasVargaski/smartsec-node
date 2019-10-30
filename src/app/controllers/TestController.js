@@ -1,4 +1,5 @@
 import Device from '../schemas/Device';
+import Mail from '../../lib/Mail';
 
 class TestController {
   async index(req, res) {
@@ -8,25 +9,14 @@ class TestController {
   }
 
   async store(req, res) {
-    const data = await Device.create({
-      temp: 15,
-      tempAdj: 15,
-      umid: 15,
-      umidAdj: 15,
-      fan: true,
-      alarm: true,
-      workMode: true,
-      lock: true,
-      phase: 15,
-      climate: 15,
-      sensorType: 15,
-      wifiMac: 'teste',
-      wifiPassword: 'teste',
-      firmwareVersion: 'teste',
-      energy: true,
+    await Mail.sendMail({
+      to: ' Jonas <jonasvargaski@hotmail.com>',
+      template: 'cancellation',
+      subject: 'TESTE',
+      text: 'teste teste',
     });
 
-    return res.json(data);
+    res.json({ msg: 'OK' });
   }
 }
 

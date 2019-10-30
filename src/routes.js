@@ -32,7 +32,7 @@ routes.get(
   DeviceIntegrationController.store
 );
 
-routes.get('/test', TestController.index);
+routes.get('/test', TestController.store);
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
 
