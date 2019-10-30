@@ -9,14 +9,17 @@ class TestController {
   }
 
   async store(req, res) {
-    await Mail.sendMail({
+    const email = await Mail.sendMail({
       to: ' Jonas <jonasvargaski@hotmail.com>',
       template: 'cancellation',
-      subject: 'TESTE',
-      text: 'teste teste',
+      subject: 'Confirmar Cadastro',
+      context: {
+        user: 'Jonas Vargaski',
+        link: 'https://technow.net.br/singin',
+      },
     });
 
-    res.json({ msg: 'OK' });
+    res.json({ msg: 'OK', email });
   }
 }
 

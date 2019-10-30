@@ -1,10 +1,12 @@
-<strong>Olá, {{ provider }}</strong>
-<p>Houve um cancelamento de horário, confira os detalhes abaixo:</p>
-<p>
-  <strong>Cliente:</strong> {{ user }} <br />
-  <strong>Data/hora:</strong> {{ date }} <br />
+<strong>Olá, {{ user }}</strong>
+<p>Por favor, para continuar o processo de cadastro, click no link abaixo para validar seu email.</p>
+<p class="teste">
+  <strong>Click aqui:</strong> <a href="{{link}}"> {{ link }} </a> <br />
   <br />
-  <small>
-    O horário está novamente disponível para novos agendamentos.
-  </small>
 </p>
+
+<style>
+  .teste{
+    display: none;
+  }
+</style>
