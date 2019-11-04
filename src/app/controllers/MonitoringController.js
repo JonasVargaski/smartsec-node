@@ -1,25 +1,26 @@
 import Cache from '../../lib/Cache';
 import DeviceData from '../schemas/Device';
+import NormalizeDeviceService from '../services/NormalizeDeviceService';
 
 class MonitoringController {
-  async onMessage({ message, socket, device }) {
-    switch (message) {
-      case 'get:device': {
+  async onMessage({ action, socket, device }) {
+    switch (action) {
+      case 'getData': {
         let lastData = await Cache.get(`external:device:last:${device.serial}`);
 
-        if (lastData) {
-          return socket.emit('device:real-time', lastData);
+        if (!lastData) {
+          lastData = await DeviceData.findOne({ wifiMac: device.serial }).sort({
+            _id: -1,
+          });
         }
-
-        lastData = await DeviceData.findOne({ wifiMac: device.serial }).sort({
-          _id: -1,
-        });
 
         if (!lastData) {
-          lastData = {};
+          return null;
         }
 
-        return socket.emit('device:real-time', lastData);
+        return socket.emit('monitoring:getData', {
+          data: NormalizeDeviceService.run([lastData])[0],
+        });
       }
       default:
         break;

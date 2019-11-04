@@ -31,10 +31,11 @@ class Socket {
 
   async connections() {
     this.io.on('connection', async socket => {
-      socket.on('monitoring', async data => {
+      socket.on('monitoring', async ({ action, ...data }) => {
         MonitoringController.onMessage({
           socket,
-          data,
+          action,
+          ...data,
         });
       });
 
