@@ -78,7 +78,10 @@ export default async (req, res, next) => {
     await schemaInfo.validate(info, { abortEarly: false });
     await schemaParams.validate(params, { abortEarly: false });
 
-    req.body = { ...info, ...params };
+    req.body = {
+      ...info,
+      ...params,
+    };
 
     return next();
   } catch (error) {

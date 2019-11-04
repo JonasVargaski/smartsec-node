@@ -4,14 +4,13 @@ import multerConfig from './config/multer';
 
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
-import DeviceIntegrationController from './app/controllers/DeviceIntegrationController';
+import ExternalDeviceController from './app/controllers/ExternalDeviceController';
 import DeviceController from './app/controllers/DeviceController';
-import UserDeviceController from './app/controllers/UserDeviceController';
+import AssociationController from './app/controllers/AssociationController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
-import TestController from './app/controllers/TestController';
 
-import validateDeviceIntegrationStore from './app/validators/DeviceIntegrationStore';
+import validadeExternalDeviceStore from './app/validators/ExternalDeviceStore';
 import validateDeviceStore from './app/validators/DeviceStore';
 import validateUserDeviceStore from './app/validators/UserDeviceStore';
 import validateUserDeviceUpdate from './app/validators/UserDeviceUpdate';
@@ -28,11 +27,10 @@ const upload = multer(multerConfig);
 routes.get(
   '/device/integration',
   authDevice,
-  validateDeviceIntegrationStore,
-  DeviceIntegrationController.store
+  validadeExternalDeviceStore,
+  ExternalDeviceController.store
 );
 
-routes.get('/test', TestController.store);
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
 
@@ -44,16 +42,16 @@ routes.post('/devices', validateDeviceStore, DeviceController.store);
 routes.get('/devices', DeviceController.index);
 routes.put('/devices/:id', DeviceController.update);
 
-routes.get('/devices/associate', UserDeviceController.index);
+routes.get('/devices/associate', AssociationController.index);
 routes.put(
   '/devices/associate/:id',
   validateUserDeviceUpdate,
-  UserDeviceController.update
+  AssociationController.update
 );
 routes.post(
   '/devices/associate',
   validateUserDeviceStore,
-  UserDeviceController.store
+  AssociationController.store
 );
 
 routes.get('/notifications', NotificationController.index);
