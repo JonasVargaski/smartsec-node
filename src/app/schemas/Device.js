@@ -19,31 +19,31 @@ const DeviceSchema = new mongoose.Schema(
       required: true,
     },
     fan: {
-      type: Boolean,
+      type: String,
       required: true,
     },
     alarm: {
-      type: Boolean,
+      type: String,
       required: true,
     },
     workMode: {
-      type: Boolean,
+      type: String,
       required: true,
     },
     lock: {
-      type: Boolean,
+      type: String,
       required: true,
     },
     phase: {
-      type: Number,
+      type: String,
       required: true,
     },
     climate: {
-      type: Number,
+      type: String,
       required: true,
     },
     sensorType: {
-      type: Number,
+      type: String,
       required: true,
     },
     wifiMac: {
@@ -59,7 +59,55 @@ const DeviceSchema = new mongoose.Schema(
       required: true,
     },
     energy: {
-      type: Boolean,
+      type: String,
+      required: true,
+    },
+    histereseDamper: {
+      type: Number,
+      required: true,
+    },
+    histereseFlap: {
+      type: Number,
+      required: true,
+    },
+    histereseFan: {
+      type: Number,
+      required: true,
+    },
+    histereSafetyMode: {
+      type: Number,
+      required: true,
+    },
+    histereAlarm: {
+      type: Number,
+      required: true,
+    },
+    timeFlapOn: {
+      type: Number,
+      required: true,
+    },
+    timeFlapOff: {
+      type: Number,
+      required: true,
+    },
+    timeAlarmRewire: {
+      type: Number,
+      required: true,
+    },
+    timeAutoTemp: {
+      type: Number,
+      required: true,
+    },
+    acceptWifiParams: {
+      type: Number,
+      required: true,
+    },
+    histereTimeAutoTemp: {
+      type: Number,
+      required: true,
+    },
+    timeAutoFanRewire: {
+      type: Number,
       required: true,
     },
   },

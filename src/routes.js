@@ -4,13 +4,13 @@ import multerConfig from './config/multer';
 
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
-import ExternalDeviceController from './app/controllers/ExternalDeviceController';
+import MonitoringController from './app/controllers/MonitoringController';
 import DeviceController from './app/controllers/DeviceController';
 import AssociationController from './app/controllers/AssociationController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
 
-import validadeExternalDeviceStore from './app/validators/ExternalDeviceStore';
+import validadeMonitoringStore from './app/validators/MonitoringStore';
 import validateDeviceStore from './app/validators/DeviceStore';
 import validateUserDeviceStore from './app/validators/UserDeviceStore';
 import validateUserDeviceUpdate from './app/validators/UserDeviceUpdate';
@@ -27,9 +27,11 @@ const upload = multer(multerConfig);
 routes.get(
   '/device/integration',
   authDevice,
-  validadeExternalDeviceStore,
-  ExternalDeviceController.store
+  validadeMonitoringStore,
+  MonitoringController.store
 );
+
+routes.get('/last', MonitoringController.index);
 
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
