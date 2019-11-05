@@ -1,6 +1,5 @@
 import User from '../models/User';
 import File from '../models/File';
-import Device from '../models/Device';
 
 class UserController {
   async store(req, res) {

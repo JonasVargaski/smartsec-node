@@ -1,7 +1,5 @@
 import socketIo from 'socket.io';
-// import Session from './Session';
-
-import Cache from './Cache';
+import MonitoringController from '../app/controllers/MonitoringController';
 
 class Socket {
   constructor() {
@@ -31,13 +29,12 @@ class Socket {
 
   async connections() {
     this.io.on('connection', async socket => {
-      // await Session.set(449, { session: socket.id, nome: 'Jonas' });
-
-      socket.on('get:device', async ({ device }) => {
-        const data = await Cache.get('teste:device');
-        if (data) {
-          socket.emit('device:real-time', data || {});
-        }
+      socket.on('monitoring', async ({ action, ...data }) => {
+        MonitoringController.onMessage({
+          socket,
+          action,
+          ...data,
+        });
       });
 
       socket.on('disconnect', async () => {

@@ -2,7 +2,7 @@ import MixDeviceUserService from '../services/MixDeviceUserService';
 import UserDevice from '../models/UserDevice';
 import Device from '../models/Device';
 
-class UserDeviceController {
+class AssociationController {
   async index(req, res) {
     const devices = await UserDevice.findAll({
       where: { user_id: req.userId, situation: 'active' },
@@ -48,4 +48,4 @@ class UserDeviceController {
     return res.json();
   }
 }
-export default new UserDeviceController();
+export default new AssociationController();
