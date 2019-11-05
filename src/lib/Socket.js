@@ -1,6 +1,4 @@
 import socketIo from 'socket.io';
-// import Session from './Session';
-
 import MonitoringController from '../app/controllers/MonitoringController';
 
 class Socket {
