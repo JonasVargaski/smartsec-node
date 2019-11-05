@@ -1,6 +1,14 @@
 import Device from '../models/Device';
 
 class DeviceController {
+  async index(req, res) {
+    const devices = await Device.findAll({
+      order: [['updatedAt', 'DESC']],
+    });
+
+    return res.json(devices);
+  }
+
   async store(req, res) {
     const { serial } = req.body;
 
@@ -15,14 +23,6 @@ class DeviceController {
     const device = await Device.create(req.body);
 
     return res.json(device);
-  }
-
-  async index(req, res) {
-    const devices = await Device.findAll({
-      order: [['updatedAt', 'DESC']],
-    });
-
-    return res.json(devices);
   }
 
   async update(req, res) {

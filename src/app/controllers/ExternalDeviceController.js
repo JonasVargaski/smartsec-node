@@ -15,6 +15,7 @@ class ExternalDeviceController {
 
     if (!dataDevice) {
       await Device.create(data);
+
       await Cache.set(
         `external:device:last:record:${data.wifiMac}`,
         data,
