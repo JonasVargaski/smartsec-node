@@ -21,7 +21,7 @@ import validateUserUpdate from './app/validators/UserUpdate';
 import authMiddleware from './app/middlewares/auth';
 import authDevice from './app/middlewares/authDevice';
 
-import Email from './app/controllers/Email';
+import Teste from './app/controllers/Teste';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -34,7 +34,8 @@ routes.get(
 );
 
 routes.get('/last', MonitoringController.index); // test
-routes.get('/email', Email.teste); // test
+routes.get('/email', Teste.email); // test
+routes.get('/logs', Teste.log); // test
 
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
