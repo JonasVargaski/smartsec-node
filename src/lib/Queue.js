@@ -1,10 +1,9 @@
 import Bee from 'bee-queue';
+import * as Sentry from '@sentry/node';
 import Log from '../app/schemas/Log';
 import redisConfig from '../config/redis';
 
-import ConfirmAccountMail from '../app/jobs/ConfirmAccountMail';
-
-const jobs = [ConfirmAccountMail];
+import jobs from '../app/jobs';
 
 class Queue {
   constructor() {
@@ -25,7 +24,10 @@ class Queue {
   }
 
   add(queue, job) {
-    return this.queues[queue].bee.createJob(job).save();
+    return this.queues[queue].bee
+      .createJob(job)
+      .retries(2)
+      .save();
   }
 
   processQueue() {
@@ -33,10 +35,13 @@ class Queue {
       const { bee, handle } = this.queues[job.key];
 
       bee.on('failed', this.handleFailure).process(handle);
+      bee.on('retrying', this.handleFailure).process(handle);
     });
   }
 
   async handleFailure(job, err) {
+    Sentry.captureException(err);
+
     await Log.create({
       type: 'Error',
       description: `Queue ${job.queue.name}: FAILED`,
