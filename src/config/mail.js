@@ -1,7 +1,7 @@
 export default {
   host: 'smtp-relay.sendinblue.com',
   port: 587,
-  secure: true,
+  secure: false,
   auth: {
     user: 'jonasvargaski@gmail.com',
     pass: '7QKJ0I4d3zrwvFa1',
