@@ -1,12 +1,24 @@
 export default {
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
+  host: 'smtp-relay.sendinblue.com',
+  port: 587,
   secure: true,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: 'jonasvargaski@gmail.com',
+    pass: '7QKJ0I4d3zrwvFa1',
   },
   default: {
     from: 'TechNow <noreply@technow.net.br>',
   },
 };
+// export default {
+//   host: process.env.MAIL_HOST,
+//   port: process.env.MAIL_PORT,
+//   secure: false,
+//   auth: {
+//     user: process.env.MAIL_USER,
+//     pass: process.env.MAIL_PASS,
+//   },
+//   default: {
+//     from: 'TechNow <noreply@technow.net.br>',
+//   },
+// };
