@@ -1,8 +1,10 @@
 import Bee from 'bee-queue';
-import CancellationMail from '../app/jobs/CancellationMail';
+import Log from '../app/schemas/Log';
 import redisConfig from '../config/redis';
 
-const jobs = [CancellationMail];
+import ConfirmAccountMail from '../app/jobs/ConfirmAccountMail';
+
+const jobs = [ConfirmAccountMail];
 
 class Queue {
   constructor() {
@@ -34,8 +36,12 @@ class Queue {
     });
   }
 
-  handleFailure(job, err) {
-    console.log(`Queue ${job.queue.name}: FAILED`, err);
+  async handleFailure(job, err) {
+    await Log.create({
+      type: 'Error',
+      description: `Queue ${job.queue.name}: FAILED`,
+      content: JSON.stringify(err),
+    });
   }
 }
 
