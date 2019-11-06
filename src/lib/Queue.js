@@ -1,7 +1,7 @@
 import Bee from 'bee-queue';
 import * as Sentry from '@sentry/node';
-import Log from '../app/schemas/Log';
 import redisConfig from '../config/redis';
+import sentryConfig from '../config/sentry';
 
 import jobs from '../app/jobs';
 
@@ -21,32 +21,27 @@ class Queue {
         handle,
       };
     });
+
+    if (process.env.NODE_ENV === 'production') {
+      Sentry.init(sentryConfig);
+    }
   }
 
   add(queue, job) {
-    return this.queues[queue].bee
-      .createJob(job)
-      .retries(2)
-      .save();
+    return this.queues[queue].bee.createJob(job).save();
   }
 
   processQueue() {
     jobs.forEach(job => {
       const { bee, handle } = this.queues[job.key];
 
-      bee.on('failed', this.handleFailure).process(handle);
-      bee.on('retrying', this.handleFailure).process(handle);
+      bee.on('failed', this.handleFailure);
+      bee.process(handle);
     });
   }
 
   async handleFailure(job, err) {
     Sentry.captureException(err);
-
-    await Log.create({
-      type: 'Error',
-      description: `Queue ${job.queue.name}: FAILED`,
-      content: JSON.stringify(err),
-    });
   }
 }
 
