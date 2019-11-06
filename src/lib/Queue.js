@@ -1,9 +1,8 @@
-import 'dotenv/config';
-
 import Bee from 'bee-queue';
 import * as Sentry from '@sentry/node';
 import redisConfig from '../config/redis';
 import sentryConfig from '../config/sentry';
+import mailConfig from '../config/mail';
 
 import jobs from '../app/jobs';
 
@@ -44,6 +43,7 @@ class Queue {
   }
 
   async handleFailure(job, err) {
+    console.log(mailConfig);
     console.log(job.queue.name, err);
     Sentry.captureException(err);
   }
