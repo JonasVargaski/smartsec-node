@@ -3,29 +3,29 @@ import * as Yup from 'yup';
 export default async (req, res, next) => {
   function getClimate(id) {
     switch (id) {
-      case 0:
-        return 'Seco';
       case 1:
-        return 'Normal';
-      case 2:
         return 'Úmido';
+      case 2:
+        return 'Normal';
+      case 3:
+        return 'Seco';
       default:
-        return '';
+        return '- -';
     }
   }
 
   function getPhase(id) {
     switch (id) {
-      case 0:
-        return 'Amarelação';
       case 1:
-        return 'Murchamento';
+        return 'Amarelação';
       case 2:
-        return 'Secagem da Folha';
+        return 'Murchamento';
       case 3:
+        return 'Secagem da Folha';
+      case 4:
         return 'Secagem do Talo';
       default:
-        return '';
+        return '- -';
     }
   }
 

@@ -1,6 +1,9 @@
 import User from '../models/User';
 import File from '../models/File';
 
+import Queue from '../../lib/Queue';
+import ConfirmAccountMail from '../jobs/ConfirmAccountMail';
+
 class UserController {
   async store(req, res) {
     const userExists = await User.findOne({ where: { email: req.body.email } });
@@ -10,6 +13,14 @@ class UserController {
     }
 
     const { id, name, email } = await User.create(req.body);
+
+    await Queue.add(ConfirmAccountMail.key, {
+      user: {
+        name,
+        email,
+      },
+      url: `http://api.technow.net.br/user/${id}/confirm`,
+    });
 
     return res.json({
       id,
