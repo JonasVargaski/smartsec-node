@@ -1,3 +1,4 @@
+import uuid from 'uuid/v4';
 import User from '../models/User';
 import File from '../models/File';
 
@@ -12,14 +13,19 @@ class UserController {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const { id, name, email } = await User.create(req.body);
+    const validation_hash = uuid();
+
+    const { id, name, email } = await User.create({
+      ...req.body,
+      validation_hash,
+    });
 
     await Queue.add(ConfirmAccountMail.key, {
       user: {
         name,
         email,
       },
-      url: `http://api.technow.net.br/user/${id}/confirm`,
+      url: `${process.env.APP_URL}/users/${validation_hash}/confirm`,
     });
 
     return res.json({
