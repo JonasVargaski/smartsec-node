@@ -9,7 +9,7 @@ class SessionController {
     const { email, password } = req.body;
 
     const user = await User.findOne({
-      where: { email, situation: 'active' },
+      where: { email },
       include: [
         {
           model: File,
@@ -27,14 +27,19 @@ class SessionController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name, provider, avatar } = user;
+    if (user.situation === 'confirmation') {
+      return res
+        .status(401)
+        .json({ error: 'Waiting for email account confirmation' });
+    }
+
+    const { id, name, avatar } = user;
 
     return res.json({
       user: {
         id,
         name,
         email,
-        provider,
         avatar,
       },
       token: jwt.sign({ id }, auth.secret, {
