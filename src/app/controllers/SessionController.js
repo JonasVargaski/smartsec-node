@@ -9,7 +9,7 @@ class SessionController {
     const { email, password } = req.body;
 
     const user = await User.findOne({
-      where: { email },
+      where: { email, situation: ['active', 'confirmation'] },
       include: [
         {
           model: File,
