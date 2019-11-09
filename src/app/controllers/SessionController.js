@@ -9,7 +9,7 @@ class SessionController {
     const { email, password } = req.body;
 
     const user = await User.findOne({
-      where: { email },
+      where: { email, situation: ['active', 'confirmation'] },
       include: [
         {
           model: File,
@@ -20,23 +20,30 @@ class SessionController {
     });
 
     if (!user) {
-      res.status(401).json({ error: 'User not found' });
+      return res.status(401).json({ error: 'User not found' });
     }
 
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name, provider, avatar } = user;
+    if (user.situation === 'confirmation') {
+      return res.status(403).json({
+        code: 'AUTH001',
+        message: 'Waiting for account confirmation',
+      });
+    }
+
+    const { id, name, avatar } = user;
 
     return res.json({
       user: {
         id,
         name,
         email,
-        provider,
         avatar,
       },
+      routes: ['/monitoring', '/device', '/profile'],
       token: jwt.sign({ id }, auth.secret, {
         expiresIn: auth.expiresIn,
       }),

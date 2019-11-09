@@ -1,5 +1,7 @@
+import uuid from 'uuid/v4';
 import User from '../models/User';
 import File from '../models/File';
+import Notification from '../schemas/Notification';
 
 import Queue from '../../lib/Queue';
 import ConfirmAccountMail from '../jobs/ConfirmAccountMail';
@@ -12,14 +14,24 @@ class UserController {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const { id, name, email } = await User.create(req.body);
+    const validation_hash = uuid();
+
+    const { id, name, email } = await User.create({
+      ...req.body,
+      validation_hash,
+    });
 
     await Queue.add(ConfirmAccountMail.key, {
       user: {
         name,
         email,
       },
-      url: `http://api.technow.net.br/user/${id}/confirm`,
+      url: `${process.env.APP_URL}/users/${validation_hash}/confirm`,
+    });
+
+    await Notification.create({
+      user: id,
+      content: `Bem vindo(a), ${name}! Adicione um dispostivo para conseguir monitorá-lo.`,
     });
 
     return res.json({

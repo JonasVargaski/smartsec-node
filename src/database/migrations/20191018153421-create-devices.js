@@ -37,6 +37,11 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('devices');
+    return Promise.all([
+      queryInterface.dropTable('devices'),
+      queryInterface.sequelize.query(
+        'DROP TYPE IF EXISTS "enum_devices_situation";'
+      ),
+    ]);
   },
 };

@@ -9,6 +9,7 @@ import DeviceController from './app/controllers/DeviceController';
 import AssociationController from './app/controllers/AssociationController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
+import AccountConfirmController from './app/controllers/AccountConfirmController';
 
 import validadeMonitoringStore from './app/validators/MonitoringStore';
 import validateDeviceStore from './app/validators/DeviceStore';
@@ -38,6 +39,7 @@ routes.get('/email', Teste.email); // test
 routes.get('/logs', Teste.log); // test
 
 routes.post('/users', validateUserStore, UserController.store);
+routes.get('/users/:hash/confirm', AccountConfirmController.update);
 routes.post('/sessions', validateSessionStore, SessionController.store);
 
 routes.use(authMiddleware);
