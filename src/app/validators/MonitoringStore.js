@@ -79,7 +79,7 @@ export default async (req, res, next) => {
       lock: parseFloat(i[7]) === 1 ? 'Travado' : 'Destravado',
       phase: getPhase(parseFloat(i[8])),
       climate: getClimate(parseFloat(i[9])),
-      sensorType: parseFloat(i[10]) === 1 ? '°F' : '%',
+      sensorType: parseFloat(i[10]) === 1 ? '%' : '°F',
       wifiMac: i[11],
       wifiPassword: parseFloat(i[12]),
       firmwareVersion: i[13],

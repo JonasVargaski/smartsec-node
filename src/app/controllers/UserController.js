@@ -1,6 +1,7 @@
 import uuid from 'uuid/v4';
 import User from '../models/User';
 import File from '../models/File';
+import Notification from '../schemas/Notification';
 
 import Queue from '../../lib/Queue';
 import ConfirmAccountMail from '../jobs/ConfirmAccountMail';
@@ -26,6 +27,11 @@ class UserController {
         email,
       },
       url: `${process.env.APP_URL}/users/${validation_hash}/confirm`,
+    });
+
+    await Notification.create({
+      user: id,
+      content: `Bem vindo(a), ${name}! Adicione um dispostivo para conseguir monitorá-lo.`,
     });
 
     return res.json({

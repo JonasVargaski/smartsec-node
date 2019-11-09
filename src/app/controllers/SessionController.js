@@ -28,9 +28,10 @@ class SessionController {
     }
 
     if (user.situation === 'confirmation') {
-      return res
-        .status(401)
-        .json({ error: 'Waiting for email account confirmation' });
+      return res.status(403).json({
+        code: 'AUTH001',
+        message: 'Waiting for account confirmation',
+      });
     }
 
     const { id, name, avatar } = user;
@@ -42,6 +43,7 @@ class SessionController {
         email,
         avatar,
       },
+      routes: ['/monitoring', '/device', '/profile'],
       token: jwt.sign({ id }, auth.secret, {
         expiresIn: auth.expiresIn,
       }),
