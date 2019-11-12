@@ -43,6 +43,10 @@ class AssociationController {
       where: { id },
     });
 
+    if (!device) {
+      return res.status(401).json({ error: 'Device does not exists' });
+    }
+
     await device.update(req.body);
 
     return res.json();
