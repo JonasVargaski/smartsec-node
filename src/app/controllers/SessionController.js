@@ -31,6 +31,7 @@ class SessionController {
       return res.status(403).json({
         code: 'AUTH001',
         message: 'Waiting for account confirmation',
+        email,
       });
     }
 

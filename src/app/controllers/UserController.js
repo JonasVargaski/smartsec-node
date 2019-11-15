@@ -1,10 +1,7 @@
-import uuid from 'uuid/v4';
 import User from '../models/User';
 import File from '../models/File';
 import Notification from '../schemas/Notification';
-
-import Queue from '../../lib/Queue';
-import ConfirmAccountMail from '../jobs/ConfirmAccountMail';
+import SendConfirmAccountService from '../services/SendConfirmAccountService';
 
 class UserController {
   async store(req, res) {
@@ -14,24 +11,13 @@ class UserController {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const validation_hash = uuid();
+    const { id, name, email } = await User.create(req.body);
 
-    const { id, name, email } = await User.create({
-      ...req.body,
-      validation_hash,
-    });
-
-    await Queue.add(ConfirmAccountMail.key, {
-      user: {
-        name,
-        email,
-      },
-      url: `${process.env.APP_URL}/users/${validation_hash}/confirm`,
-    });
+    await SendConfirmAccountService.run({ email });
 
     await Notification.create({
       user: id,
-      content: `Bem vindo(a), ${name}! Adicione um dispostivo para conseguir monitorá-lo.`,
+      content: `Bem vindo(a), ${name}. Adicione um dispostivo para monitorá-lo.`,
     });
 
     return res.json({
