@@ -1,4 +1,5 @@
-import socketIo from 'socket.io';
+import SocketIO from 'socket.io';
+import Redis from 'ioredis';
 import MonitoringController from '../app/controllers/MonitoringController';
 
 class Socket {
@@ -7,7 +8,7 @@ class Socket {
   }
 
   init(server) {
-    this.io = socketIo(server);
+    this.io = SocketIO(server);
 
     this.middlewares();
     this.connections();
@@ -17,6 +18,27 @@ class Socket {
 
   middlewares() {
     this.io.set('origins', '*:*');
+
+    this.io.set(
+      'store',
+      new SocketIO.RedisStore({
+        redisPub: new Redis({
+          host: process.env.REDIS_HOST,
+          port: process.env.REDIS_PORT,
+          keyPrefix: 'socket:',
+        }),
+        redisSub: new Redis({
+          host: process.env.REDIS_HOST,
+          port: process.env.REDIS_PORT,
+          keyPrefix: 'socket:',
+        }),
+        redisClient: new Redis({
+          host: process.env.REDIS_HOST,
+          port: process.env.REDIS_PORT,
+          keyPrefix: 'socket:',
+        }),
+      })
+    );
 
     // this.io.use((socket, next) => {
     //   const { token } = socket.handshake.query;
