@@ -42,7 +42,8 @@ class Queue {
   }
 
   async handleFailure(job, err) {
-    err.job = job;
+    console.log(job.queue.name);
+    Sentry.captureMessage(job.queue.name);
     Sentry.captureException(err);
   }
 }
