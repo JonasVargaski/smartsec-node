@@ -42,11 +42,8 @@ class Queue {
   }
 
   async handleFailure(job, err) {
-    Sentry.withScope(scope => {
-      scope.setExtra('job', job);
-      scope.setExtra('err', err);
-      Sentry.captureException(err.exception);
-    });
+    err.job = job;
+    Sentry.captureException(err);
   }
 }
 
