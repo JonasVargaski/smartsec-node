@@ -36,13 +36,11 @@ class Queue {
       const { bee, handle } = this.queues[job.key];
 
       bee.on('failed', this.handleFailure);
-      bee.on('succeeded', this.handleFailure);
       bee.process(handle);
     });
   }
 
   async handleFailure(job, err) {
-    console.log(job.queue.name);
     Sentry.captureMessage(job.queue.name);
     Sentry.captureException(err);
   }
