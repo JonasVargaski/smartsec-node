@@ -1,4 +1,4 @@
-import socketIo from 'socket.io';
+import SocketIO from 'socket.io';
 import MonitoringController from '../app/controllers/MonitoringController';
 
 class Socket {
@@ -7,7 +7,7 @@ class Socket {
   }
 
   init(server) {
-    this.io = socketIo(server);
+    this.io = SocketIO(server);
 
     this.middlewares();
     this.connections();
