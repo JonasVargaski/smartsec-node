@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@sentry/node": "^5.7.1",
+    "artillery": "^1.6.0-29",
     "bcryptjs": "^2.4.3",
     "bee-queue": "^1.2.2",
     "cors": "^2.8.5",

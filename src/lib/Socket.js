@@ -17,7 +17,6 @@ class Socket {
 
   middlewares() {
     this.io.set('origins', '*:*');
-
     // this.io.use((socket, next) => {
     //   const { token } = socket.handshake.query;
     //   if (!token) {
@@ -29,6 +28,7 @@ class Socket {
 
   async connections() {
     this.io.on('connection', async socket => {
+      console.log(socket.id);
       socket.on('monitoring', async ({ action, ...data }) => {
         MonitoringController.onMessage({
           socket,

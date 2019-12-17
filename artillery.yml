@@ -1,0 +1,14 @@
+config:
+  target: 'http://192.168.0.110'
+  phases:
+    - duration: 60
+      arrivalRate: 20
+scenarios:
+  -
+    name: 'Session'
+    flow:
+    - post:
+        url: "/sessions"
+        json:
+            email:"jonasvargaski@hotmail.com"
+            password:"123"
