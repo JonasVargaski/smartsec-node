@@ -35,13 +35,13 @@ class MonitoringController {
     return res.json(data);
   }
 
-  async onMessage({ action, socket, device }) {
+  async onMessage({ action, socket, data }) {
     switch (action) {
-      case 'getData': {
-        let lastData = await Cache.get(`external:device:last:${device.serial}`);
+      case 'deviceData': {
+        let lastData = await Cache.get(`external:device:last:${data.serial}`);
 
         if (!lastData) {
-          lastData = await Device.findOne({ wifiMac: device.serial }).sort({
+          lastData = await Device.findOne({ wifiMac: data.serial }).sort({
             _id: -1,
           });
         }
@@ -50,7 +50,17 @@ class MonitoringController {
           return null;
         }
 
-        return socket.emit('monitoring:getData', lastData);
+        return socket.emit('monitoring:deviceData', lastData);
+      }
+      case 'selectedDevice': {
+        const { serial } = data;
+        socket.emit('monitoring:changeDevice', { serial });
+
+        return this.onMessage({
+          action: 'deviceData',
+          socket,
+          data: { serial },
+        });
       }
       default:
         break;

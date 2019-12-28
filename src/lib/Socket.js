@@ -28,12 +28,11 @@ class Socket {
 
   async connections() {
     this.io.on('connection', async socket => {
-      console.log(socket.id);
       socket.on('monitoring', async ({ action, ...data }) => {
         MonitoringController.onMessage({
           socket,
           action,
-          ...data,
+          data,
         });
       });
 
