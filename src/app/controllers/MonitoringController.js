@@ -5,7 +5,7 @@ class MonitoringController {
   async store(req, res) {
     const data = req.body;
 
-    req.io.emit('monitoring:getData', data);
+    req.io.emit('monitoring:device.data', data);
 
     await Cache.set(`external:device:last:${data.wifiMac}`, data, 60);
 
@@ -50,7 +50,7 @@ class MonitoringController {
           return null;
         }
 
-        return socket.emit('monitoring:deviceData', lastData);
+        return socket.emit('monitoring:device.data', lastData);
       }
       case 'selectedDevice': {
         const { serial } = data;

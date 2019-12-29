@@ -5,7 +5,7 @@ class SocketSession {
   constructor() {
     this.redis = new Redis({
       ...redisConfig,
-      keyPrefix: 'session:',
+      keyPrefix: 'session',
     });
   }
 
