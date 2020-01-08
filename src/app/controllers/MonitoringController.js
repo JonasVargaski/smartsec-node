@@ -1,26 +1,19 @@
 import Cache from '../../lib/Cache';
 import Device from '../schemas/Device';
+import MonitoringBroadcastService from '../services/MonitoringBroadcastService';
 
 class MonitoringController {
   async store(req, res) {
     const data = req.body;
+    MonitoringBroadcastService.run({ io: req.io, data });
 
-    req.io.emit('monitoring:device.data', data);
+    await Cache.set(`monitoring:${data.serial}:last`, data, 60);
 
-    await Cache.set(`external:device:last:${data.wifiMac}`, data, 60);
+    const interval = await Cache.get(`monitoring:${data.serial}:interval`);
 
-    const dataDevice = await Cache.get(
-      `external:device:last:record:${data.wifiMac}`
-    );
-
-    if (!dataDevice) {
+    if (!interval) {
       await Device.create(data);
-
-      await Cache.set(
-        `external:device:last:record:${data.wifiMac}`,
-        data,
-        60 * 5
-      );
+      await Cache.set(`monitoring:${data.serial}:interval`, data, 60 * 5);
     }
 
     return res.json({ save: 'SUCESS' });
@@ -37,30 +30,23 @@ class MonitoringController {
 
   async onMessage({ action, socket, data }) {
     switch (action) {
-      case 'deviceData': {
-        let lastData = await Cache.get(`external:device:last:${data.serial}`);
+      case 'change:device': {
+        socket.leaveAll();
+        socket.join(String(data.serial));
+        socket.emit('monitoring:changedevice', data.serial);
+
+        let lastData = await Cache.get(`monitoring:${data.serial}:last`);
 
         if (!lastData) {
-          lastData = await Device.findOne({ wifiMac: data.serial }).sort({
+          lastData = await Device.findOne({ serial: data.serial }).sort({
             _id: -1,
           });
         }
 
-        if (!lastData) {
-          return null;
+        if (lastData) {
+          return socket.emit('monitoring:data', lastData);
         }
-
-        return socket.emit('monitoring:device.data', lastData);
-      }
-      case 'selectedDevice': {
-        const { serial } = data;
-        socket.emit('monitoring:changeDevice', { serial });
-
-        return this.onMessage({
-          action: 'deviceData',
-          socket,
-          data: { serial },
-        });
+        return null;
       }
       default:
         break;
