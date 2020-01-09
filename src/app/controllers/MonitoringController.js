@@ -20,12 +20,17 @@ class MonitoringController {
   }
 
   async index(req, res) {
-    const data = await Device.find()
-      .sort({
-        _id: -1,
-      })
-      .limit(15);
-    return res.json(data);
+    const { serial } = req.query;
+
+    const device = await Device.findOne({ serial }).sort({
+      _id: -1,
+    });
+
+    if (!device) {
+      return res.status(401).json({ error: 'Device not found' });
+    }
+
+    return res.json(device);
   }
 
   async onMessage({ action, socket, data }) {

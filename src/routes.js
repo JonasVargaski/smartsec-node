@@ -53,6 +53,7 @@ routes.put(
   validateUserDeviceUpdate,
   AssociationController.update
 );
+
 routes.post(
   '/devices/associate',
   validateUserDeviceStore,
