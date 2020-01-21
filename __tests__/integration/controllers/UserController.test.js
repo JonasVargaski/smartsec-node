@@ -30,6 +30,7 @@ describe('UserController', () => {
 
   it('should no be able to register with duplicated email', async () => {
     const user = await factory.attrs('User');
+
     await request(app)
       .post('/users')
       .send(user);

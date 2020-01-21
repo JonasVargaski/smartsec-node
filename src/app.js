@@ -10,7 +10,7 @@ import 'express-async-errors';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
-import socket from './lib/Socket';
+import Socket from './webSocket';
 
 import './database';
 
@@ -18,7 +18,7 @@ class App {
   constructor() {
     this.server = express();
     this.app = http.Server(this.server);
-    socket.init(this.app);
+    Socket.init(this.app);
 
     if (process.env.NODE_ENV === 'production') {
       Sentry.init(sentryConfig);
@@ -34,11 +34,6 @@ class App {
     this.server.use(cors());
     this.server.use(express.json());
     this.server.disable('x-powered-by');
-
-    this.server.use((req, res, next) => {
-      req.io = socket.get();
-      return next();
-    });
 
     this.server.use(
       '/files',
