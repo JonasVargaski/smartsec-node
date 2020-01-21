@@ -42,8 +42,8 @@ export default async (req, res, next) => {
       phase: Yup.string().required(),
       climate: Yup.string().required(),
       sensorType: Yup.string().required(),
-      wifiMac: Yup.string().required(),
-      wifiPassword: Yup.number().required(),
+      serial: Yup.string().required(),
+      password: Yup.number().required(),
       firmwareVersion: Yup.string().required(),
       energy: Yup.string().required(),
     });
@@ -60,7 +60,7 @@ export default async (req, res, next) => {
       timeAlarmRewire: Yup.number().required(),
       timeAutoTemp: Yup.number().required(),
       acceptWifiParams: Yup.number().required(),
-      wifiPassword: Yup.number().required(),
+      password: Yup.number().required(),
       histereTimeAutoTemp: Yup.number().required(),
       timeAutoFanRewire: Yup.number().required(),
     });
@@ -80,10 +80,11 @@ export default async (req, res, next) => {
       phase: getPhase(parseFloat(i[8])),
       climate: getClimate(parseFloat(i[9])),
       sensorType: parseFloat(i[10]) === 1 ? '%' : '°F',
-      wifiMac: i[11],
-      wifiPassword: parseFloat(i[12]),
+      serial: i[11],
+      password: parseFloat(i[12]),
       firmwareVersion: i[13],
       energy: parseFloat(i[14]) === 1 ? 'Energia' : 'Bateria',
+      date: new Date().getTime(),
     };
 
     const params = {
@@ -98,7 +99,7 @@ export default async (req, res, next) => {
       timeAlarmRewire: parseFloat(p[8]),
       timeAutoTemp: parseFloat(p[9]),
       acceptWifiParams: parseFloat(p[10]),
-      wifiPassword: parseFloat(p[11]),
+      password: parseFloat(p[11]),
       histereTimeAutoTemp: parseFloat(p[12]),
       timeAutoFanRewire: parseFloat(p[13]),
     };

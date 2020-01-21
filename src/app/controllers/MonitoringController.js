@@ -1,56 +1,57 @@
 import Cache from '../../lib/Cache';
 import Device from '../schemas/Device';
+import MonitoringBroadcastService from '../services/MonitoringBroadcastService';
 
 class MonitoringController {
   async store(req, res) {
     const data = req.body;
+    MonitoringBroadcastService.run({ io: req.io, data });
 
-    req.io.emit('monitoring:getData', data);
+    await Cache.set(`monitoring:${data.serial}:last`, data, 60);
 
-    await Cache.set(`external:device:last:${data.wifiMac}`, data, 60);
+    const interval = await Cache.get(`monitoring:${data.serial}:interval`);
 
-    const dataDevice = await Cache.get(
-      `external:device:last:record:${data.wifiMac}`
-    );
-
-    if (!dataDevice) {
+    if (!interval) {
       await Device.create(data);
-
-      await Cache.set(
-        `external:device:last:record:${data.wifiMac}`,
-        data,
-        60 * 5
-      );
+      await Cache.set(`monitoring:${data.serial}:interval`, data, 60 * 5);
     }
 
     return res.json({ save: 'SUCESS' });
   }
 
   async index(req, res) {
-    const data = await Device.find()
-      .sort({
-        _id: -1,
-      })
-      .limit(15);
-    return res.json(data);
+    const { serial } = req.query;
+
+    const device = await Device.findOne({ serial }).sort({
+      _id: -1,
+    });
+
+    if (!device) {
+      return res.status(401).json({ error: 'Device not found' });
+    }
+
+    return res.json(device);
   }
 
-  async onMessage({ action, socket, device }) {
+  async onMessage({ action, socket, data }) {
     switch (action) {
-      case 'getData': {
-        let lastData = await Cache.get(`external:device:last:${device.serial}`);
+      case 'change:device': {
+        socket.leaveAll();
+        socket.join(String(data.serial));
+        socket.emit('monitoring:changedevice', data.serial);
+
+        let lastData = await Cache.get(`monitoring:${data.serial}:last`);
 
         if (!lastData) {
-          lastData = await Device.findOne({ wifiMac: device.serial }).sort({
+          lastData = await Device.findOne({ serial: data.serial }).sort({
             _id: -1,
           });
         }
 
-        if (!lastData) {
-          return null;
+        if (lastData) {
+          return socket.emit('monitoring:data', lastData);
         }
-
-        return socket.emit('monitoring:getData', lastData);
+        return null;
       }
       default:
         break;

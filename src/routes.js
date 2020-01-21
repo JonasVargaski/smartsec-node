@@ -32,6 +32,8 @@ routes.get(
   MonitoringController.store
 );
 
+routes.get('/device', MonitoringController.index);
+
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/users/confirm', AccountConfirmController.store);
 routes.get('/users/confirm', AccountConfirmController.update);
@@ -51,6 +53,7 @@ routes.put(
   validateUserDeviceUpdate,
   AssociationController.update
 );
+
 routes.post(
   '/devices/associate',
   validateUserDeviceStore,

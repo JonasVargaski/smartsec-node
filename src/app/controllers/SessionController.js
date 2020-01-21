@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import File from '../models/File';
 import auth from '../../config/auth';
+import uniqueID from '../../util/uniqueID';
 
 class SessionController {
   async store(req, res) {
@@ -36,6 +37,7 @@ class SessionController {
     }
 
     const { id, name, avatar } = user;
+    const session = uniqueID();
 
     return res.json({
       user: {
@@ -44,7 +46,7 @@ class SessionController {
         email,
         avatar,
       },
-      routes: ['/monitoring', '/device', '/profile'],
+      session,
       token: jwt.sign({ id }, auth.secret, {
         expiresIn: auth.expiresIn,
       }),

@@ -46,11 +46,11 @@ const DeviceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    wifiMac: {
+    serial: {
       type: String,
       required: true,
     },
-    wifiPassword: {
+    password: {
       type: String,
       required: true,
     },
@@ -110,9 +110,13 @@ const DeviceSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    date: {
+      type: Number,
+      required: true,
+    },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 );
 
