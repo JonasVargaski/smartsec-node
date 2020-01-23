@@ -1,5 +1,7 @@
+import webSocket from '../../webSocket';
+
 class MonitoringBroadcastService {
-  async run({ io, data }) {
+  async run({ data }) {
     const {
       temp,
       tempAdj,
@@ -15,18 +17,22 @@ class MonitoringBroadcastService {
       date,
     } = data;
 
-    io.in(serial).emit('monitoring:data', {
-      temp,
-      tempAdj,
-      umid,
-      umidAdj,
-      fan,
-      alarm,
-      lock,
-      phase,
-      climate,
-      sensorType,
-      date,
+    Object.values(webSocket.clients).forEach(client => {
+      if (client.device_selected === serial) {
+        webSocket.io.to(client.socket_id).emit('monitoring:data', {
+          temp,
+          tempAdj,
+          umid,
+          umidAdj,
+          fan,
+          alarm,
+          lock,
+          phase,
+          climate,
+          sensorType,
+          date,
+        });
+      }
     });
   }
 }

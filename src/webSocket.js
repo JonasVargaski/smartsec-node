@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 import authConfig from './config/auth';
 
-import MonitoringController from './app/controllers/MonitoringController';
+import wsControllers from './app/controllers/ws';
 
 class WebSocket {
   init(server) {
@@ -11,7 +11,7 @@ class WebSocket {
 
     this.io = SocketIO(server);
     this.middlewares();
-    this.listenConnections();
+    this.listen();
   }
 
   middlewares() {
@@ -21,7 +21,7 @@ class WebSocket {
       const { token } = socket.handshake.query;
       try {
         const decoded = await promisify(jwt.verify)(token, authConfig.secret);
-        socket.params.userId = decoded.id;
+        socket.handshake.query.user_id = decoded.id;
         return next();
       } catch (err) {
         return next(new Error('Acess Deined'));
@@ -29,27 +29,20 @@ class WebSocket {
     });
   }
 
-  async listenConnections() {
+  async listen() {
     this.io.on('connection', async socket => {
       this.clients[socket.id] = {
-        user_id: socket.params.id,
+        socket_id: socket.id,
+        user_id: socket.handshake.query.user_id,
+        device_selected: null,
       };
 
-      console.log(this.clients);
-      socket.on('join', room => {
-        socket.join(room);
-      });
-
-      socket.on('monitoring', async ({ action, ...data }) => {
-        MonitoringController.onMessage({
-          socket,
-          action,
-          data,
-        });
+      wsControllers.forEach(controller => {
+        controller.init(socket, this.clients);
       });
 
       socket.on('disconnect', async () => {
-        // await Session.invalidate(449);
+        delete this.clients[socket.id];
       });
     });
   }

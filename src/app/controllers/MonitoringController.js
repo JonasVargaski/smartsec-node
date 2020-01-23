@@ -5,7 +5,7 @@ import MonitoringBroadcastService from '../services/MonitoringBroadcastService';
 class MonitoringController {
   async store(req, res) {
     const data = req.body;
-    MonitoringBroadcastService.run({ io: req.io, data });
+    MonitoringBroadcastService.run({ data });
 
     await Cache.set(`monitoring:${data.serial}:last`, data, 60);
 
@@ -31,32 +31,6 @@ class MonitoringController {
     }
 
     return res.json(device);
-  }
-
-  async onMessage({ action, socket, data }) {
-    switch (action) {
-      case 'change:device': {
-        socket.leaveAll();
-        socket.join(String(data.serial));
-        socket.emit('monitoring:changedevice', data.serial);
-
-        let lastData = await Cache.get(`monitoring:${data.serial}:last`);
-
-        if (!lastData) {
-          lastData = await Device.findOne({ serial: data.serial }).sort({
-            _id: -1,
-          });
-        }
-
-        if (lastData) {
-          return socket.emit('monitoring:data', lastData);
-        }
-        return null;
-      }
-      default:
-        break;
-    }
-    return null;
   }
 }
 export default new MonitoringController();
