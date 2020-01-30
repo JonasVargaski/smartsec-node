@@ -10,6 +10,7 @@ import AssociationController from './app/controllers/AssociationController';
 import FileController from './app/controllers/FileController';
 import NotificationController from './app/controllers/NotificationController';
 import AccountConfirmController from './app/controllers/AccountConfirmController';
+import Teste from './app/controllers/Teste';
 
 import validadeMonitoringStore from './app/validators/MonitoringStore';
 import validateDeviceStore from './app/validators/DeviceStore';
@@ -31,6 +32,9 @@ routes.get(
   validadeMonitoringStore,
   MonitoringController.store
 );
+
+routes.get('/img', Teste.save);
+routes.get('/log', Teste.log);
 
 routes.get('/device', MonitoringController.index);
 

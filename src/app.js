@@ -7,6 +7,7 @@ import cors from 'cors';
 import Youch from 'youch';
 import * as Sentry from '@sentry/node';
 import 'express-async-errors';
+import requestIp from 'request-ip';
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
@@ -34,11 +35,14 @@ class App {
     this.server.use(cors());
     this.server.use(express.json());
     this.server.disable('x-powered-by');
+    this.server.set('trust proxy', true);
 
     this.server.use(
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
     );
+
+    this.server.use(requestIp.mw());
   }
 
   routes() {

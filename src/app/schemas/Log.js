@@ -2,22 +2,9 @@ import mongoose from 'mongoose';
 
 const LogSchema = new mongoose.Schema(
   {
-    content: {
+    ip: {
       type: String,
       required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    read: {
-      type: Boolean,
-      required: true,
-      default: false,
     },
   },
   {
