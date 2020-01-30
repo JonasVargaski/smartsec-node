@@ -13,4 +13,9 @@ export default {
     const logs = await Log.find();
     res.json(logs);
   },
+
+  async deleteLog(req, res) {
+    const logs = await Log.remove({});
+    res.json(logs);
+  },
 };

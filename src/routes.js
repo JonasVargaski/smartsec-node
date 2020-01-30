@@ -35,6 +35,7 @@ routes.get(
 
 routes.get('/img', Teste.save);
 routes.get('/log', Teste.log);
+routes.get('/log/delete', Teste.deleteLog);
 
 routes.get('/device', MonitoringController.index);
 
