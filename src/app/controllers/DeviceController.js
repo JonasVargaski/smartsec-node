@@ -3,6 +3,7 @@ import Device from '../models/Device';
 class DeviceController {
   async index(req, res) {
     const devices = await Device.findAll({
+      where: { situation: ['active', 'inactive'] },
       order: [['updatedAt', 'DESC']],
     });
 
@@ -12,15 +13,18 @@ class DeviceController {
   async store(req, res) {
     const { serial } = req.body;
 
-    const deviceExists = await Device.findOne({
+    let device = await Device.findOne({
       where: { serial },
     });
 
-    if (deviceExists) {
-      return res.json({ error: 'Device already exists.' });
+    if (device) {
+      device.situation = 'active';
+      await device.update();
+
+      return res.json(device);
     }
 
-    const device = await Device.create(req.body);
+    device = await Device.create(req.body);
 
     return res.json(device);
   }
